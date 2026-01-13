@@ -1,0 +1,1616 @@
+{
+  "name": "AI-Based Automated Email Management System for School Administration",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        128,
+        192
+      ],
+      "id": "f11acc14-9dda-41b5-b6f6-66ebf901c5ca",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1PLj8PtbKSoZSSxGEUyWefw5wuRBwGWVmrm2VinBdvfY",
+          "mode": "list",
+          "cachedResultName": "student_demo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PLj8PtbKSoZSSxGEUyWefw5wuRBwGWVmrm2VinBdvfY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PLj8PtbKSoZSSxGEUyWefw5wuRBwGWVmrm2VinBdvfY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        352,
+        192
+      ],
+      "id": "baee4ee5-e92e-4360-9dfd-7c2f6b271f85",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cco3xn0FCcvXv2gL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1024,
+        32
+      ],
+      "id": "a19044bc-5d1b-4f8a-821e-c153e76535e3",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "wcO0P4h4noPYQJJw",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7ec1e938-cc36-44db-b8df-ede9be2a5813",
+              "name": "status",
+              "value": "FAILED",
+              "type": "string"
+            },
+            {
+              "id": "558349ea-7243-438f-8bce-b9ea35410bd9",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "60bff6f5-7ffc-439f-bafb-536563b14b34",
+              "name": "studentName",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "b46292da-f01c-464d-9c3a-46060f6d3569",
+              "name": "studentEmail",
+              "value": "={{ $('Prepare Student Email Data').item.json.studentEmail }}",
+              "type": "string"
+            },
+            {
+              "id": "e9332361-0f3e-47d5-a5f8-a326abd4a427",
+              "name": "feeAmount",
+              "value": "={{ $('Prepare Student Email Data').item.json.feeAmount }}",
+              "type": "number"
+            },
+            {
+              "id": "b66dae0f-1147-4e0b-94eb-2f383d6e85f5",
+              "name": "error",
+              "value": "={{ $json.error || 'Unknown error' }}",
+              "type": "string"
+            },
+            {
+              "id": "d308cc0f-87ae-4a53-b2f2-b30507de0419",
+              "name": "subject",
+              "value": "={{ $('Generate Personalized Fee Reminder').item.json.output.subject }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2096,
+        128
+      ],
+      "id": "2b448af8-3d6a-4555-b8d6-195ad451f506",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1PLj8PtbKSoZSSxGEUyWefw5wuRBwGWVmrm2VinBdvfY",
+          "mode": "list",
+          "cachedResultName": "student_demo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PLj8PtbKSoZSSxGEUyWefw5wuRBwGWVmrm2VinBdvfY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 480714727,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PLj8PtbKSoZSSxGEUyWefw5wuRBwGWVmrm2VinBdvfY/edit#gid=480714727"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Send Emails detail": "SUCCESS",
+            "Emails": "={{ $json.studentEmail }}"
+          },
+          "matchingColumns": [
+            "Emails"
+          ],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Class",
+              "displayName": "Class",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Roll No.",
+              "displayName": "Roll No.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Fee Amount",
+              "displayName": "Fee Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Due Dates ",
+              "displayName": "Due Dates ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Emails",
+              "displayName": "Emails",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Send Emails detail",
+              "displayName": "Send Emails detail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "FORWARD",
+              "displayName": "FORWARD",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2320,
+        128
+      ],
+      "id": "b11d221a-28c4-47a5-9fce-7ec6565736fa",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cco3xn0FCcvXv2gL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        576,
+        1376
+      ],
+      "id": "b06a0bec-3074-4ef8-8566-2ba047688b13",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "wcO0P4h4noPYQJJw",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1264,
+        672
+      ],
+      "id": "399e5929-cd3a-4352-90ba-7c2fe863ec22",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "wcO0P4h4noPYQJJw",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1264,
+        1072
+      ],
+      "id": "48d719b5-0724-4fdd-8f27-adf190016462",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "wcO0P4h4noPYQJJw",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1264,
+        1472
+      ],
+      "id": "c707d98d-b661-44ab-b53e-24799b77b420",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "wcO0P4h4noPYQJJw",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1264,
+        1984
+      ],
+      "id": "56ed2268-6587-475a-9deb-7e27cf57c514",
+      "name": "OpenAI Chat Model5",
+      "credentials": {
+        "openAiApi": {
+          "id": "wcO0P4h4noPYQJJw",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 3,
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        576,
+        192
+      ],
+      "id": "5667ead1-9e37-4c78-8a09-cca94bb4aac3",
+      "name": "Process Students One by One"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d74bfc49-7b9d-445a-bda6-91fe875a8cd5",
+              "name": "studentName",
+              "value": "={{ $('Get row(s) in sheet').item.json['First Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "78c81f5a-c1c4-4da1-a31d-c3b545a4d8dc",
+              "name": "studentEmail",
+              "value": "={{ $('Get row(s) in sheet').item.json['Student Emails'] }}",
+              "type": "string"
+            },
+            {
+              "id": "15b646a9-8493-4bb3-a5e2-6f29aaa6054b",
+              "name": "studentClass",
+              "value": "={{ $json.Class }}",
+              "type": "number"
+            },
+            {
+              "id": "d0add10f-ce8c-46ba-b264-d332e447f12c",
+              "name": "rollNo",
+              "value": "={{ $json['Roll No.'] }}",
+              "type": "number"
+            },
+            {
+              "id": "8836ee7b-7a39-4a3d-aa90-1c73063dde47",
+              "name": "feeAmount",
+              "value": "={{ $json['Fee Amount'] }}",
+              "type": "number"
+            },
+            {
+              "id": "1b4b30cd-5f38-45ef-8f42-cde4934345d7",
+              "name": "dueDate",
+              "value": "={{ $json['Due Dates '] }}",
+              "type": "string"
+            },
+            {
+              "id": "369c6b5e-83c2-46b2-afb9-91f025fd15fc",
+              "name": "schoolName",
+              "value": "={{ $json['School name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "13a476c1-4629-4e54-a506-807be1d124e0",
+              "name": "Admin of School",
+              "value": "={{ $json['Admin of School'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        16
+      ],
+      "id": "ea481dfa-fc76-4f57-8e34-c9fea411576f",
+      "name": "Prepare Student Email Data"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Prepare Student Email Data').item.json.studentEmail }}",
+        "subject": "={{ $json.output.subject }}",
+        "message": "={{ $json.output.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1648,
+        16
+      ],
+      "id": "ebe84202-06ee-43c7-8146-a634ee77d883",
+      "name": "Send Individual Email",
+      "webhookId": "4688a598-89dd-48a3-96fd-6a59a8f07750",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAHLilalxq2YQUoh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7cf46343-a6f5-4032-b6a0-5c44f4e79808",
+              "name": "status",
+              "value": "SUCCESS",
+              "type": "string"
+            },
+            {
+              "id": "55a3de59-0986-4370-a53b-9ed795aa9af9",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "120a74eb-a209-470c-b418-dfc13554c368",
+              "name": "studentEmail",
+              "value": "={{ $('Prepare Student Email Data').item.json.studentEmail }}",
+              "type": "string"
+            },
+            {
+              "id": "3d147cd1-6f58-4923-9dc0-38a70d71e7b5",
+              "name": "feeAmount",
+              "value": "={{ $('Prepare Student Email Data').item.json.feeAmount }}",
+              "type": "number"
+            },
+            {
+              "id": "5947f6ee-bafc-4724-bd35-6d4d5b3880d1",
+              "name": "messageId",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "925549a6-b0de-4a38-9b16-b2e9fd817fa4",
+              "name": "subject",
+              "value": "={{ $('Generate Personalized Fee Reminder').item.json.output.subject }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2096,
+        -80
+      ],
+      "id": "df0614d6-7902-4cae-8213-cb94327be0a4",
+      "name": "Log Sucess"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"replyType\": \"payment_confirmation\",\n\t\"confidence\": 0.95,\n\t\"summary\": \"Student confirmed payment made on January 15th\",\n\t\"requiresForwarding\": false\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        832,
+        1376
+      ],
+      "id": "7f4370e3-e52b-4e28-9d22-58dac3f2aeb9",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "={\n  \"replySubject\": \"Payment Confirmation Received – Verification in Process\",\n  \"replyBody\": \"<html><body style=\\\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\\\">\\n\\n  <img src=\\\"https://drive.google.com/file/d/18y1_J-EIuWYrFrBTIBK2wQXWBeXmlCqh/view?usp=drive_link\\\" alt=\\\"School Logo\\\" style=\\\"max-width: 200px; margin-bottom: 20px;\\\" />\\n\\n  <h2 style=\\\"margin-top: 0;\\\">Payment Confirmation</h2>\\n\\n  <p>Dear Sir/Madam,</p>\\n\\n  <p>Thank you for confirming the payment. We have received your message and would like to inform you that the submitted payment details are currently under <strong>verification</strong>.</p>\\n\\n  <p><strong>Important:</strong> Once the payment is successfully verified in our system, you will receive the <strong>official receipt</strong> on your registered email address.</p>\\n\\n  <h3>Next Steps</h3>\\n  <p>Please allow us some time to complete the verification process. If any additional information is required, our team will contact you promptly.</p>\\n\\n  <p>If you have any questions or need further assistance, feel free to reach out to us at <strong>school administration office</strong> or reply to this email.</p>\\n\\n  <p>We appreciate your cooperation and thank you for your timely response.</p>\\n\\n  <p>Warm regards,<br/>\\n  <strong>{{ $json.schoolName }}</strong><br/>\\n  {{ $json.adminName }}</p>\\n\\n</body></html>\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1520,
+        672
+      ],
+      "id": "94d7d25d-4dec-485b-8f7d-4639904423ae",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "={\n  \"replySubject\": \"Extension Request Received – Under Review\",\n  \"replyBody\": \"<html><body style=\\\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\\\">\\n\\n  <img src=\\\"https://drive.google.com/file/d/18y1_J-EIuWYrFrBTIBK2wQXWBeXmlCqh/view?usp=drive_link\\\" alt=\\\"School Logo\\\" style=\\\"max-width: 200px; margin-bottom: 20px;\\\" />\\n\\n  <h2 style=\\\"margin-top: 0;\\\">Extension Request Acknowledgement</h2>\\n\\n  <p>Dear Sir/Madam,</p>\\n\\n  <p>Thank you for reaching out to us regarding your request for an extension. We acknowledge receipt of your message and appreciate you informing us in advance.</p>\\n\\n  <p><strong>Important:</strong> Please note that your request has been forwarded for <strong>management review</strong>. All extension requests are carefully evaluated to ensure fairness and compliance with school policies.</p>\\n\\n  <p>You will receive an official response within <strong>2–3 business days</strong> after the review process is completed.</p>\\n\\n  <h3>Need Urgent Assistance?</h3>\\n  <p>If your matter is time-sensitive or requires immediate attention, please do not hesitate to contact the school administration directly or reply to this email with the relevant details.</p>\\n\\n  <p>Thank you for your patience and cooperation.</p>\\n\\n  <p>Warm regards,<br/>\\n  <strong>{{ $json.schoolName }}</strong><br/>\\n  {{ $json.adminName }}</p>\\n\\n</body></html>\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1520,
+        1072
+      ],
+      "id": "44535029-6b32-4087-8258-27c8ec6a38e5",
+      "name": "Structured Output Parser3"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "={\n  \"replySubject\": \"Receipt Request Received – Under Processing\",\n  \"replyBody\": \"<html><body style=\\\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\\\">\\n\\n  <img src=\\\"https://drive.google.com/file/d/18y1_J-EIuWYrFrBTIBK2wQXWBeXmlCqh/view?usp=drive_link\\\" alt=\\\"School Logo\\\" style=\\\"max-width: 200px; margin-bottom: 20px;\\\" />\\n\\n  <h2 style=\\\"margin-top: 0;\\\">Fee Receipt Request</h2>\\n\\n  <p>Dear Sir/Madam,</p>\\n\\n  <p>Thank you for your message regarding the fee receipt. We acknowledge your request and are pleased to assist you.</p>\\n\\n  <p><strong>Important Information:</strong> Your request for the <strong>official fee receipt</strong> has been received and is currently being processed. Our team will verify the payment details in our records before issuing the receipt.</p>\\n\\n  <p>Once the verification is successfully completed, the <strong>fee receipt</strong> will be sent to your registered email address.</p>\\n\\n  <h3>Need Further Assistance?</h3>\\n  <p>If you require the receipt urgently or if any additional details are needed, please feel free to reply to this email or contact the school administration office. We will be happy to assist you.</p>\\n\\n  <p>Thank you for your patience and cooperation.</p>\\n\\n  <p>Warm regards,<br/>\\n  <strong>{{ $json.schoolName }}</strong><br/>\\n  {{ $json.adminName }}</p>\\n\\n</body></html>\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1520,
+        1472
+      ],
+      "id": "f9ac96a4-47ad-4fbd-965c-8dc09ebf3c1d",
+      "name": "Structured Output Parser4"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "={\n  \"replySubject\": \"Thank You for Your Inquiry\",\n  \"replyBody\": \"<html><body style=\\\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\\\">\\n\\n  <img src=\\\"https://drive.google.com/file/d/18y1_J-EIuWYrFrBTIBK2wQXWBeXmlCqh/view?usp=drive_link\\\" alt=\\\"School Logo\\\" style=\\\"max-width: 200px; margin-bottom: 20px;\\\" />\\n\\n  <h2 style=\\\"margin-top: 0;\\\">General Inquiry</h2>\\n\\n  <p>Dear Sir/Madam,</p>\\n\\n  <p>Thank you for reaching out to us. We have received your message and appreciate you taking the time to contact our office.</p>\\n\\n  <p><strong>Important:</strong> Based on the details shared in your message, we are reviewing your inquiry to ensure that the most <strong>accurate and appropriate response</strong> is provided to you.</p>\\n\\n  <p>If your inquiry relates to admissions, fees, documentation, or any administrative matter, please be assured that the concerned department will address it promptly.</p>\\n\\n  <h3>Need Further Assistance?</h3>\\n  <p>If you require any additional information or would like further clarification, kindly reply to this email or contact the school administration office. Our team will be happy to assist you.</p>\\n\\n  <p>Thank you for your patience and cooperation.</p>\\n\\n  <p>Warm regards,<br/>\\n  <strong>{{ $json.schoolName }}</strong><br/>\\n  {{ $json.adminName }}</p>\\n\\n</body></html>\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1520,
+        1984
+      ],
+      "id": "98fe1f35-8f6f-445e-93a0-41d4afd0189a",
+      "name": "Structured Output Parser5"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            },
+            {}
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        128,
+        1152
+      ],
+      "id": "04b4842d-233a-4292-8d91-b25fd50f9c95",
+      "name": "Monitor Incoming Replies",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAHLilalxq2YQUoh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b4d4eb7f-78cf-49ca-bbdc-9a4cb1f2abfe",
+              "name": "senderEmail",
+              "value": "={{ $json.From }}",
+              "type": "string"
+            },
+            {
+              "id": "deed5abf-fbca-40d7-9e92-c271f53da1b5",
+              "name": "messageBody",
+              "value": "={{ $json.snippet }}",
+              "type": "string"
+            },
+            {
+              "id": "3e0e558f-7cad-481b-afbe-a57d39950337",
+              "name": "threadId",
+              "value": "={{ $json.threadId }}",
+              "type": "string"
+            },
+            {
+              "id": "a9fd8d5f-2163-4ced-92d4-2465ffc94a6e",
+              "name": "messageId",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        1152
+      ],
+      "id": "16fa3189-c381-4b80-ba7e-1054f0462701",
+      "name": "Extract Reply Context"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the following email and classify it into one of these categories:\n1. payment_confirmation - Parent confirms payment was made\n2. extension_request - Parent requests deadline extension\n3. fee_receipt - Parent ask for recipt\n4. other - Any other type of response\n\nEmail Details:\nFrom: {{ $json.senderEmail }}\nSubject: {{ $json.subject }}\nMessage: {{ $json.messageBody }}\n\nProvide:\n- replyType: The category\n- confidence: Your confidence level (0-1)\n- summary: Brief summary of the email content\n- requiresForwarding: true if this needs management attention (complex issues, complaints, special requests)",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a professional School Administration Officer responsible for fee collection. Your role is to generate polite, professional, and personalized fee reminder emails that maintain a respectful tone while clearly communicating payment obligations."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        640,
+        1152
+      ],
+      "id": "b86a557a-4ca4-490d-857a-30eed8952377",
+      "name": "Classify Reply Type"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.replyType }}",
+                    "rightValue": "payment_confirmation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "fa5e2fbd-7720-49bc-a0e6-c1206252326d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Payment Confirmation"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "1e7570eb-90dd-43ab-a05b-8ad963fca0df",
+                    "leftValue": "={{ $json.output.replyType }}",
+                    "rightValue": "extension_request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Extension Request"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8856a3eb-2ea8-4eea-bda2-161cdd082051",
+                    "leftValue": "={{ $json.output.replyType }}",
+                    "rightValue": "fee_receipt",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Fee Receipt"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d52237ed-ebb3-450d-84a3-f1d82c89a6d1",
+                    "leftValue": "={{ $json.output.replyType }}",
+                    "rightValue": "other",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Other"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        1120
+      ],
+      "id": "74a2a895-f743-4a57-8f77-54f069418885",
+      "name": "Route by Reply Type"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a professional HTML reply to this payment confirmation:\n\nOriginal Email:\nFrom: {{ $('Extract Reply Context').item.json.senderEmail }}\nMessage: {{ $('Extract Reply Context').item.json.messageBody }}\n\nCreate a professional HTML reply that:\n1. Thanks them for confirming the payment\n2. Mentions that the payment will be verified with important details in BOLD\n3. States they will receive a receipt once verified\n4. Uses proper HTML formatting with <strong> tags for emphasis\n5. Includes school logo placeholder at top: <img src=\"https://www.webearl.com/img/logo.png\" alt=\"School Logo\" style=\"max-width: 200px; margin-bottom: 20px;\">\n6. Maintains a warm, professional tone with proper HTML structure\n7. Provides contact information for any questions\n8. Uses professional email styling with proper spacing and formatting\n9. Especially do not change the format everytime. Draft the mails in fixed professional format as given.\n10. generate the outputs of body and subject differenty \nReturn with replySubject and replyBody (as HTML) fields.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a professional school accounts email automation system.\n\nYour task:\nGenerate a reply email in STRICTLY the same HTML structure and wording provided below.\n\nSTRICT RULES:\n- DO NOT change wording, layout, tone, font size, spacing, or formatting.\n- DO NOT add or remove any text.\n- DO NOT include explanations, markdown, or extra lines.\n- Replace ONLY the values inside brackts({{ $json }})\n- Output must contain ONLY two fields: replySubject and replyBody.\n- replyBody MUST be valid HTML and start with <html> and end with </html>.\n- If the format cannot be followed exactly, return: FORMAT_ERROR.\n\nINPUT DATA:\nSender Email: {{ $('Extract Reply Context').item.json.senderEmail }}\nOriginal Message: {{ $('Extract Reply Context').item.json.messageBody }}\n\n========================\nFIXED RESPONSE FORMAT\n========================\n\nreplySubject: Payment Received – Under Verification\n\nreplyBody:\n<html>\n  <body style=\"margin:0; padding:0; background-color:#f4f6f9; font-family: Arial, Helvetica, sans-serif;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#f4f6f9; padding:20px;\">\n      <tr>\n        <td align=\"center\">\n          <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#ffffff; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.08); overflow:hidden;\">\n\n            !-- HEADER WITH LOGO -->\n            <tr>\n      <td style=\"padding:20px; border-bottom:1px solid #e5e5e5;\">\n        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n          <tr>\n            <!-- LEFT: LOGO -->\n            <td align=\"left\">\n              <img src=\"https://drive.google.com/file/d/18y1_J-EIuWYrFrBTIBK2wQXWBeXmlCqh/view?usp=drive_link\" alt=\"School Logo\" style=\"max-height:40px; margin-bottom:10px;\">\n            </td>\n\n            <!-- RIGHT: CONTACT DETAILS -->\n            <td align=\"right\" style=\"width:50%; font-size:14px; color:#7f8c8d; line-height:1.4;\">\n              <strong>{{ $json.schoolName }}</strong><br>\n              Accounts Department<br>\n              Contact:<strong>+91 9898989898</strong><br>\n              Website: <strong>https://www.webearl.com/</strong>\n            </td>\n          </tr>\n        </table>\n      </td>\n    </tr>\n\n\n            <!-- TITLE -->\n            <tr>\n              <td align=\"center\" style=\"padding:20px;\">\n                <h1 style=\"margin:0; font-size:22px; color:#27ae60;\">Payment Confirmation Received</h1>\n              </td>\n            </tr>\n\n            <!-- BODY -->\n            <tr>\n              <td style=\"padding:0 30px 20px; font-size:15px; color:#2c3e50; line-height:1.6;\">\n                <p>Dear Sir/Madam,</p>\n\n                <p>\n                  Thank you for confirming that the payment has been completed. We sincerely appreciate your prompt update.\n                </p>\n\n                <p>\n                  Please note that your payment is currently <strong>under verification</strong> by our accounts team. During this process, we will carefully validate the transaction details including:\n                </p>\n\n                <ul style=\"padding-left:20px;\">\n                  <li><strong>Student Name</strong></li>\n                  <li><strong>Amount Paid</strong></li>\n                  <li><strong>Transaction Reference / Receipt</strong></li>\n                  <li><strong>Date of Payment</strong></li>\n                </ul>\n\n                <p>\n                  Once the verification is successfully completed, you will receive an official <strong>payment receipt</strong> from our side for your records.\n                </p>\n\n                <p>\n                  If you have any questions or need further assistance, please feel free to contact the school accounts office at <strong>accounts@yourdomain.com</strong>.\n                </p>\n\n                <p style=\"margin-top:20px;\">\n                  Warm regards,<br>\n                  <strong>School Accounts Department</strong>\n                </p>\n              </td>\n            </tr>\n\n            <!-- FOOTER -->\n            <tr>\n              <td align=\"center\" style=\"padding:15px; font-size:12px; color:#95a5a6; background-color:#fafafa; border-top:1px solid #e5e5e5;\">\n                This is an automated response. Please do not reply directly to this email.\n              </td>\n            </tr>\n\n          </table>\n        </td>\n      </tr>\n    </table>\n  </body>\n</html>\n\n========================\nEND OF FORMAT\n========================\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1328,
+        448
+      ],
+      "id": "c326642d-d2bc-4409-9660-424a8e399f06",
+      "name": "Generate Payment Confirmation Reply"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a professional HTML reply to this extension request:\n\nOriginal Email:\nFrom: {{ $('Extract Reply Context').item.json.senderEmail }}\nMessage: {{ $('Extract Reply Context').item.json.messageBody }}\n\nCreate a professional HTML reply that:\n1. Acknowledges their extension request\n2. Explains that the request will be reviewed by management (in BOLD)\n3. States they will receive a response within <strong>2-3 business days</strong>\n4. Uses proper HTML formatting with emphasis on key information\n5. Includes school logo placeholder: <img src=\"https://www.webearl.com/img/logo.png\" alt=\"School Logo\" style=\"max-width: 200px; margin-bottom: 20px;\">\n6. Maintains an understanding yet professional tone\n7. Encourages them to contact if urgent\n8. Uses professional email styling with proper spacing and formatting\n9. Especially do not change the format everytime. Draft the mails in fixed professional format as given.\n10. generate the outputs of body and subject differenty \n\nReturn with replySubject and replyBody (as HTML) fields.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a professional school administration email automation system.\n\nYour task:\nGenerate a reply email in STRICTLY the same HTML structure and wording provided below.\n\nSTRICT RULES:\n- DO NOT change wording, layout, tone, spacing, or formatting.\n- DO NOT add or remove any text.\n- DO NOT include explanations, markdown, or extra lines.\n- Replace ONLY the values inside brackets({{ $json }})\n- Output must contain ONLY two fields: replySubject and replyBody.\n- replyBody MUST be valid HTML and start with <html> and end with </html>.\n- If the format cannot be followed exactly, return: FORMAT_ERROR.\n\nINPUT DATA:\nSender Email: {{ $('Extract Reply Context').item.json.senderEmail }}\nOriginal Message: {{ $('Extract Reply Context').item.json.messageBody }}\n\n========================\nFIXED RESPONSE FORMAT\n========================\n\nreplySubject: Extension Request Received – Under Review\n\nreplyBody:\n<html>\n  <body style=\"margin:0; padding:0; background-color:#f4f6f9; font-family: Arial, Helvetica, sans-serif;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#f4f6f9; padding:20px;\">\n      <tr>\n        <td align=\"center\">\n          <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#ffffff; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.08); overflow:hidden;\">\n\n           !-- HEADER WITH LOGO -->\n            <tr>\n      <td style=\"padding:20px; border-bottom:1px solid #e5e5e5;\">\n        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n          <tr>\n            <!-- LEFT: LOGO -->\n            <td align=\"left\">\n              <img src=\"https://drive.google.com/file/d/18y1_J-EIuWYrFrBTIBK2wQXWBeXmlCqh/view?usp=drive_link\" alt=\"School Logo\" style=\"max-height:40px; margin-bottom:10px;\">\n            </td>\n\n            <!-- RIGHT: CONTACT DETAILS -->\n            <td align=\"right\" style=\"width:50%; font-size:14px; color:#7f8c8d; line-height:1.4;\">\n              <strong>{{ $json.schoolName }}</strong><br>\n              Accounts Department<br>\n              Contact:<strong>+91 9898989898</strong><br>\n              Website: <strong>https://www.webearl.com/</strong>\n            </td>\n          </tr>\n        </table>\n      </td>\n    </tr>\n\n\n            <!-- TITLE -->\n            <tr>\n              <td align=\"center\" style=\"padding:20px;\">\n                <h1 style=\"margin:0; font-size:22px; color:#2980b9;\">Extension Request Acknowledgement</h1>\n              </td>\n            </tr>\n\n            <!-- BODY -->\n            <tr>\n              <td style=\"padding:0 30px 20px; font-size:15px; color:#2c3e50; line-height:1.6;\">\n                <p>Dear Sir/Madam,</p>\n\n                <p>\n                  We acknowledge receipt of your request for an extension. Thank you for reaching out and informing us in advance.\n                </p>\n\n                <p>\n                  Please be advised that your request is currently <strong>under review by the management</strong>. All extension requests are carefully evaluated in accordance with school policies and administrative guidelines.\n                </p>\n\n                <p>\n                  You will receive an official response regarding your request within <strong>2–3 business days</strong>.\n                </p>\n\n                <p>\n                  If your matter is urgent or time-sensitive, we encourage you to contact the school office at <strong>accounts@yourdomain.com</strong> for immediate assistance.\n                </p>\n\n                <p style=\"margin-top:20px;\">\n                  Thank you for your understanding and cooperation.\n                </p>\n\n                <p style=\"margin-top:10px;\">\n                  Warm regards,<br>\n                  <strong>School Administration Office</strong>\n                </p>\n              </td>\n            </tr>\n\n            <!-- FOOTER -->\n            <tr>\n              <td align=\"center\" style=\"padding:15px; font-size:12px; color:#95a5a6; background-color:#fafafa; border-top:1px solid #e5e5e5;\">\n                This is an automated response. Please do not reply directly to this email.\n              </td>\n            </tr>\n\n          </table>\n        </td>\n      </tr>\n    </table>\n  </body>\n</html>\n\n========================\nEND OF FORMAT\n========================\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1328,
+        848
+      ],
+      "id": "9c874494-0f85-42ec-8177-15a6492a36ec",
+      "name": "Generate Extension Request Reply"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a professional HTML reply to this fee recepit:\n\nOriginal Email:\nFrom: {{ $('Extract Reply Context').item.json.senderEmail }}\nMessage: {{ $('Extract Reply Context').item.json.messageBody }}\n\nCreate a professional HTML reply that:\n1. Addresses their specific question about fees\n2. Provides clear, accurate information with important details in BOLD\n3. Uses proper HTML formatting for better readability\n4. Includes school logo placeholder: <img src=\"https://www.webearl.com/img/logo.png\" alt=\"School Logo\" style=\"max-width: 200px; margin-bottom: 20px;\">\n5. Offers to provide additional clarification if needed\n6. Maintains a helpful, professional tone\n7. Includes contact information for further assistance\n8. Uses professional email styling with proper spacing and formatting\n9. Especially do not change the format everytime. Draft the mails in fixed professional format as given.\n10. generate the outputs of body and subject differenty \nReturn with replySubject and replyBody (as HTML) fields.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a professional school accounts email automation system.\n\nYour task:\nGenerate a reply email in STRICTLY the same HTML structure and wording provided below.\n\nSTRICT RULES:\n- DO NOT change wording, layout, tone, spacing, or formatting.\n- DO NOT add or remove any text.\n- DO NOT include explanations, markdown, or extra lines.\n- Replace ONLY the values inside brackets({{ $json }})\n- Output must contain ONLY two fields: replySubject and replyBody.\n- replyBody MUST be valid HTML and start with <html> and end with </html>.\n- If the format cannot be followed exactly, return: FORMAT_ERROR.\n\nINPUT DATA:\nSender Email: {{ $('Extract Reply Context').item.json.senderEmail }}\nOriginal Message: {{ $('Extract Reply Context').item.json.messageBody }}\n\n========================\nFIXED RESPONSE FORMAT\n========================\n\nreplySubject: Fee Receipt / Fee Details – Information Provided\n\nreplyBody:\n<html>\n  <body style=\"margin:0; padding:0; background-color:#f4f6f9; font-family: Arial, Helvetica, sans-serif;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#f4f6f9; padding:20px;\">\n      <tr>\n        <td align=\"center\">\n          <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#ffffff; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.08); overflow:hidden;\">\n\n            !-- HEADER WITH LOGO -->\n            <tr>\n      <td style=\"padding:20px; border-bottom:1px solid #e5e5e5;\">\n        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n          <tr>\n            <!-- LEFT: LOGO -->\n            <td align=\"left\">\n              <img src=\"https://drive.google.com/file/d/18y1_J-EIuWYrFrBTIBK2wQXWBeXmlCqh/view?usp=drive_link\" alt=\"School Logo\" style=\"max-height:40px; margin-bottom:10px;\">\n            </td>\n\n            <!-- RIGHT: CONTACT DETAILS -->\n            <td align=\"right\" style=\"width:50%; font-size:14px; color:#7f8c8d; line-height:1.4;\">\n              <strong>{{ $json.schoolName }}</strong><br>\n              Accounts Department<br>\n              Contact:<strong>+91 9898989898</strong><br>\n              Website: <strong>https://www.webearl.com/</strong>\n            </td>\n          </tr>\n        </table>\n      </td>\n    </tr>\n\n\n            <!-- TITLE -->\n            <tr>\n              <td align=\"center\" style=\"padding:20px;\">\n                <h1 style=\"margin:0; font-size:22px; color:#16a085;\">Fee Information & Receipt Details</h1>\n              </td>\n            </tr>\n\n            <!-- BODY -->\n            <tr>\n              <td style=\"padding:0 30px 20px; font-size:15px; color:#2c3e50; line-height:1.6;\">\n                <p>Dear Sir/Madam,</p>\n\n                <p>\n                  Thank you for your message regarding your fee receipt and related payment details. We appreciate you contacting us for clarification.\n                </p>\n\n                <p>\n                  With reference to your query, please note that the school fees are processed based on the official records maintained by the accounts department. Once a payment is successfully recorded and verified, an official <strong>fee receipt</strong> is generated accordingly.\n                </p>\n\n                <p>\n                  If your concern is related to any of the following, please ensure that the information provided is complete and accurate:\n                </p>\n\n                <ul style=\"padding-left:20px;\">\n                  <li><strong>Student Name</strong></li>\n                  <li><strong>Amount Paid</strong></li>\n                  <li><strong>Transaction Reference / Payment ID</strong></li>\n                  <li><strong>Date of Payment</strong></li>\n                </ul>\n\n                <p>\n                  Once these details are verified in our system, the corresponding <strong>fee receipt</strong> will be issued and shared with you.\n                </p>\n\n                <p>\n                  If you require any additional clarification or if there is any discrepancy in the records, please do not hesitate to contact the accounts office at <strong>accounts@yourdomain.com</strong>. We will be glad to assist you further.\n                </p>\n\n                <p style=\"margin-top:20px;\">\n                  Warm regards,<br>\n                  <strong>School Accounts Department</strong>\n                </p>\n              </td>\n            </tr>\n\n            <!-- FOOTER -->\n            <tr>\n              <td align=\"center\" style=\"padding:15px; font-size:12px; color:#95a5a6; background-color:#fafafa; border-top:1px solid #e5e5e5;\">\n                This is an automated response. Please do not reply directly to this email.\n              </td>\n            </tr>\n\n          </table>\n        </td>\n      </tr>\n    </table>\n  </body>\n</html>\n\n========================\nEND OF FORMAT\n========================\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1328,
+        1248
+      ],
+      "id": "9aef7f64-1dfa-4645-8691-e78c3519ad58",
+      "name": "Generate Fee Receipt Request Reply"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a professional HTML reply to this general inquiry:\n\nOriginal Email:\nFrom: {{ $('Extract Reply Context').item.json.senderEmail }}\nMessage: {{ $('Extract Reply Context').item.json.messageBody }}\n\nCreate a professional HTML reply that:\n1. Acknowledges their message\n2. Provides appropriate response based on content with key points in BOLD\n3. Uses proper HTML formatting for professional appearance\n4. Includes school logo placeholder: <img src=\"https://www.webearl.com/img/logo.png\" alt=\"School Logo\" style=\"max-width: 200px; margin-bottom: 20px;\">\n5. Offers further assistance\n6. Maintains a courteous, professional tone\n7. Includes contact information\n8. Uses professional email styling with proper spacing and formatting\n9. Especially do not change the format everytime. Draft the mails in fixed professional format as given.\n10. generate the outputs of body and subject differenty \nReturn with replySubject and replyBody (as HTML) fields.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a professional school administration email automation system.\n\nYour task:\nGenerate a reply email in STRICTLY the same HTML structure and wording provided below.\n\nSTRICT RULES:\n- DO NOT change wording, layout, tone, spacing, or formatting.\n- DO NOT add or remove any text.\n- DO NOT include explanations, markdown, or extra lines.\n- Replace ONLY the values inside brackets({{ $json }})\n- Output must contain ONLY two fields: replySubject and replyBody.\n- replyBody MUST be valid HTML and start with <html> and end with </html>.\n- If the format cannot be followed exactly, return: FORMAT_ERROR.\n\nINPUT DATA:\nSender Email: {{ $('Extract Reply Context').item.json.senderEmail }}\nOriginal Message: {{ $('Extract Reply Context').item.json.messageBody }}\n\n========================\nFIXED RESPONSE FORMAT\n========================\n\nreplySubject: Inquiry Received – Thank You for Contacting Us\n\nreplyBody:\n<html>\n  <body style=\"margin:0; padding:0; background-color:#f4f6f9; font-family: Arial, Helvetica, sans-serif;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#f4f6f9; padding:20px;\">\n      <tr>\n        <td align=\"center\">\n          <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#ffffff; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.08); overflow:hidden;\">\n\n           !-- HEADER WITH LOGO -->\n            <tr>\n      <td style=\"padding:20px; border-bottom:1px solid #e5e5e5;\">\n        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n          <tr>\n            <!-- LEFT: LOGO -->\n            <td align=\"left\">\n              <img src=\"https://drive.google.com/file/d/18y1_J-EIuWYrFrBTIBK2wQXWBeXmlCqh/view?usp=drive_link\" alt=\"School Logo\" style=\"max-height:40px; margin-bottom:10px;\">\n            </td>\n\n            <!-- RIGHT: CONTACT DETAILS -->\n            <td align=\"right\" style=\"width:50%; font-size:14px; color:#7f8c8d; line-height:1.4;\">\n              <strong>{{ $json.schoolName }}</strong><br>\n              Accounts Department<br>\n              Contact:<strong>+91 9898989898</strong><br>\n              Website: <strong>https://www.webearl.com/</strong>\n            </td>\n          </tr>\n        </table>\n      </td>\n    </tr>\n\n\n            <!-- TITLE -->\n            <tr>\n              <td align=\"center\" style=\"padding:20px;\">\n                <h1 style=\"margin:0; font-size:22px; color:#34495e;\">General Inquiry Acknowledgement</h1>\n              </td>\n            </tr>\n\n            <!-- BODY -->\n            <tr>\n              <td style=\"padding:0 30px 20px; font-size:15px; color:#2c3e50; line-height:1.6;\">\n                <p>Dear Sir/Madam,</p>\n\n                <p>\n                  Thank you for reaching out to us. We acknowledge receipt of your message and appreciate you taking the time to contact our office.\n                </p>\n\n                <p>\n                  With reference to your inquiry, please be assured that your request has been noted and will be reviewed by the appropriate department. Any relevant information or necessary action will be communicated to you accordingly.\n                </p>\n\n                <p>\n                  If your message relates to important matters such as <strong>admissions</strong>, <strong>fees</strong>, <strong>documents</strong>, or <strong>academic schedules</strong>, kindly ensure that all required details have been provided for efficient processing.\n                </p>\n\n                <p>\n                  Should you require further assistance or clarification, please do not hesitate to contact us at <strong>accounts@yourdomain.com</strong>. Our team will be pleased to support you.\n                </p>\n\n                <p style=\"margin-top:20px;\">\n                  We appreciate your communication and look forward to assisting you.\n                </p>\n\n                <p style=\"margin-top:10px;\">\n                  Warm regards,<br>\n                  <strong>School Administration Office</strong>\n                </p>\n              </td>\n            </tr>\n\n            <!-- FOOTER -->\n            <tr>\n              <td align=\"center\" style=\"padding:15px; font-size:12px; color:#95a5a6; background-color:#fafafa; border-top:1px solid #e5e5e5;\">\n                This is an automated response. Please do not reply directly to this email.\n              </td>\n            </tr>\n\n          </table>\n        </td>\n      </tr>\n    </table>\n  </body>\n</html>\n\n========================\nEND OF FORMAT\n========================\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1328,
+        1760
+      ],
+      "id": "173a88fd-e635-47f3-b6a5-d9a05d5d8ac4",
+      "name": "Generate Query Reply"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Extract Reply Context').first().json.senderEmail }}",
+        "subject": "={{ $('Classify Reply Type').item.json.output.replyType }}",
+        "message": "={{ $json.output.replyBody }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1728,
+        1152
+      ],
+      "id": "2fcc9a77-52f6-4601-9208-3a1fbd6902a6",
+      "name": "Send Automated Reply",
+      "webhookId": "4cccca52-c534-480f-a225-b12567d0677d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAHLilalxq2YQUoh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "799684de-d05b-4499-aa9f-2ddd26180509",
+              "leftValue": "={{ $json.labelIds[0] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1952,
+        1152
+      ],
+      "id": "d776daa3-538c-4d9e-8aaf-c750f8533e1b",
+      "name": "Check if Forward Needed"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Monitor Incoming Replies').item.json.To }}",
+        "subject": "=FWD: Fee Inquiry Requires Attention - {{ $('Classify Reply Type').item.json.output.replyType }}",
+        "message": "=<p><strong>This email requires management attention:</strong></p><p><strong>From:</strong> {{ $('Extract Reply Context').item.json.senderEmail }}</p><p><strong>Classification:</strong></p><p><strong></p><hr><p><strong>Original Message:</strong></p><p>{{ $('Extract Reply Context').item.json.messageBody }}</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2176,
+        1088
+      ],
+      "id": "63c8d4bd-053c-4498-a501-8dbe4f2418be",
+      "name": "Forward to Management",
+      "webhookId": "e5ca395f-c8ab-4da6-b7a8-c844f4649d54",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAHLilalxq2YQUoh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1PLj8PtbKSoZSSxGEUyWefw5wuRBwGWVmrm2VinBdvfY",
+          "mode": "list",
+          "cachedResultName": "student_demo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PLj8PtbKSoZSSxGEUyWefw5wuRBwGWVmrm2VinBdvfY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 480714727,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PLj8PtbKSoZSSxGEUyWefw5wuRBwGWVmrm2VinBdvfY/edit#gid=480714727"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Emails": "={{ $('Extract Reply Context').item.json.senderEmail }}",
+            "FORWARD": "DONE"
+          },
+          "matchingColumns": [
+            "Emails"
+          ],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Class",
+              "displayName": "Class",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Roll No.",
+              "displayName": "Roll No.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Fee Amount",
+              "displayName": "Fee Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Due Dates ",
+              "displayName": "Due Dates ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Emails",
+              "displayName": "Emails",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Send Emails detail",
+              "displayName": "Send Emails detail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FORWARD",
+              "displayName": "FORWARD",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2416,
+        1168
+      ],
+      "id": "98854438-5ad7-4576-a112-9c795099b3db",
+      "name": "Export Logs to Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cco3xn0FCcvXv2gL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c779af2f-60ec-417c-bd7e-2fed2e35eae6",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1872,
+        16
+      ],
+      "id": "40319a5c-1242-4089-ad87-82a5e372bca3",
+      "name": "Check Email Send Success"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a professional, well-formatted HTML fee reminder email for the following student:\n\nStudent Details:\n- Name: {{ $json.studentName }}\n- Class: {{ $json.studentClass }}\n- Roll No: {{ $json.rollNo }}\n- Fee Amount: {{ $json.feeAmount }}\n- Due Date: {{ $json.dueDate }}\n\nSchool: {{ $json.schoolName }}\nAdmin: {{ $json['Admin of School'] }}\n\nCreate an HTML email that:\n1. Addresses the student/parent respectfully\n2. Clearly states the pending fee amount and due date in BOLD\n3. Uses proper HTML formatting with headings, paragraphs, and emphasis\n4. Highlights important information (fee amount, due date, payment deadline) in BOLD using <strong> tags\n5. Includes a placeholder for the school logo at the top: <img src=\"https://www.webearl.com/img/logo.png\" alt=\"School Logo\" style=\"max-width: 200px; margin-bottom: 20px;\">\n6. Provides payment instructions in a clear, formatted manner\n7. Maintains a professional yet friendly tone with proper HTML structure\n8. Includes contact information for queries\n9. Has a proper subject line\n10. Uses professional email styling with proper spacing and formatting\n11. Especially do not change the format everytime. Draft the mails in fixed professional format as given.\n12. generate the outputs of body and subject differenty \nReturn the email in structured format with subject, greeting, body (as HTML), and closing.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a professional school accounts email automation system.\n\nYour task:\nGenerate the email subject and body in HTML format using the EXACT structure, wording, and design provided below.\n\nSTRICT RULES:\n- DO NOT change wording, layout, font sizes, colors, spacing, or formatting.\n- DO NOT add or remove any text.\n- DO NOT add greetings, emojis, explanations, or extra lines.\n- DO NOT wrap in markdown or code blocks.\n- Replace ONLY the values inside curly brackets({{ $json }}) using the provided student data.\ngenerate the outputs of body and subject differenty \n- Output must start with <html> and end with </html> exactly.\n- If the format cannot be followed exactly, return: FORMAT_ERROR\n\n========================\nFIXED EMAIL TEMPLATE\n========================\n<html>\n  <body style=\"margin:0; padding:0; background-color:#f4f6f9; font-family: Arial, Helvetica, sans-serif;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#f4f6f9; padding:20px;\">\n      <tr>\n        <td align=\"center\">\n          <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#ffffff; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.08); overflow:hidden;\">\n\n            <!-- HEADER WITH LOGO -->\n            <tr>\n      <td style=\"padding:20px; border-bottom:1px solid #e5e5e5;\">\n        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n          <tr>\n            <!-- LEFT: LOGO -->\n            <td align=\"left\">\n              <img src=\"https://drive.google.com/file/d/18y1_J-EIuWYrFrBTIBK2wQXWBeXmlCqh/view?usp=drive_link\" alt=\"School Logo\" style=\"max-height:40px; margin-bottom:10px;\">\n            </td>\n\n            <!-- RIGHT: CONTACT DETAILS -->\n            <td align=\"right\" style=\"width:50%; font-size:14px; color:#7f8c8d; line-height:1.4;\">\n              <strong>{{ $json.schoolName }}</strong><br>\n              Accounts Department<br>\n              Contact:<strong>+91 9898989898</strong><br>\n              Website: <strong>https://www.webearl.com/</strong>\n            </td>\n          </tr>\n        </table>\n      </td>\n    </tr>\n\n\n            <!-- TITLE -->\n            <tr>\n              <td align=\"center\" style=\"padding:20px;\">\n                <h1 style=\"margin:0; font-size:24px; color:#c0392b;\">Fee Reminder – Pending Payment</h1>\n              </td>\n            </tr>\n\n            <!-- BODY CONTENT -->\n            <tr>\n              <td style=\"padding:0 30px 20px; font-size:15px; color:#2c3e50; line-height:1.6;\">\n                <p>Dear <strong>{{ $json.schoolName }}</strong>,</p>\n\n                <p>\n                  This is to formally inform you that the school fee for the current academic term remains <strong style=\"color:#c0392b;\">unpaid</strong>.\n                </p>\n\n                <!-- HIGHLIGHTED DETAILS -->\n                <table width=\"100%\" cellpadding=\"8\" cellspacing=\"0\" style=\"border:1px solid #e0e0e0; border-radius:6px; margin:15px 0;\">\n                  <tr style=\"background-color:#f9f9f9;\">\n                    <td style=\"font-size:14px; font-weight:bold;\">Student Name</td>\n                    <td style=\"font-size:14px;\">{{ $json.studentName }}</td>\n                  </tr>\n                  <tr>\n                    <td style=\"font-size:14px; font-weight:bold;\">Academic Term</td>\n                    <td style=\"font-size:14px;\">{{ $json.studentClass }}</td>\n                  </tr>\n                  <tr style=\"background-color:#f9f9f9;\">\n                    <td style=\"font-size:14px; font-weight:bold;\">Amount Due</td>\n                    <td style=\"font-size:16px; font-weight:bold; color:#c0392b;\">{{ $json.feeAmount }}</td>\n                  </tr>\n                  <tr>\n                    <td style=\"font-size:14px; font-weight:bold;\">Due Date</td>\n                    <td style=\"font-size:16px; font-weight:bold; color:#c0392b;\">{{ $json.dueDate }}</td>\n                  </tr>\n                </table>\n\n                <p>\n                  Kindly ensure that the payment is completed on or before the due date mentioned above to avoid any late charges or administrative inconvenience.\n                </p>\n\n                <p>\n                  If you have already made the payment, please disregard this message.\n                </p>\n\n                <p>\n                  For any clarification or assistance, please contact the school accounts office.\n                </p>\n\n                <p style=\"margin-top:20px;\">\n                  Regards,<br>\n                  <strong>{{ $json.schoolName }}</strong><br>\n                  Accounts Department\n                </p>\n              </td>\n            </tr>\n\n            <!-- FOOTER -->\n            <tr>\n              <td align=\"center\" style=\"padding:15px; font-size:12px; color:#95a5a6; background-color:#fafafa; border-top:1px solid #e5e5e5;\">\n                This is an automated system-generated email. Please do not reply.\n              </td>\n            </tr>\n\n          </table>\n        </td>\n      </tr>\n    </table>\n  </body>\n</html>\n\n========================\nEND OF TEMPLATE\n========================\n {{ $json.schoolName }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1088,
+        -192
+      ],
+      "id": "2d5f18f5-a367-4ace-946b-cf8b42b73117",
+      "name": "Generate Personalized Fee Reminder"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"replySubject\": \"Fee Reminder – Pending Payment for {{ $json.studentName }}\",\n  \"replyBody\": \"<html><body style=\\\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\\\">\\n\\n  <img src=\\\"https://drive.google.com/file/d/18y1_J-EIuWYrFrBTIBK2wQXWBeXmlCqh/view?usp=drive_link\\\" alt=\\\"School Logo\\\" style=\\\"max-width: 200px; margin-bottom: 20px;\\\" />\\n\\n  <h2 style=\\\"margin-top: 0;\\\">Important Fee Reminder</h2>\\n\\n  <p>Dear Parent / Guardian,</p>\\n\\n  <p>This is a gentle reminder regarding the pending school fee for your child at <strong>{{ $json.schoolName }}</strong>. We hope this message finds you well.</p>\\n\\n  <p>As per our records, the following fee amount is currently <strong>outstanding</strong>:</p>\\n\\n  <p>\\n    <strong>Student Name:</strong> {{ $json.studentName }}<br/>\\n    <strong>Class:</strong> {{ $json.class }}<br/>\\n    <strong>Roll No:</strong> {{ $json.rollNo }}\\n  </p>\\n\\n  <div style=\\\"background-color: #f9f9f9; border-left: 4px solid #2b6cb0; padding: 10px 15px; margin: 15px 0;\\\">\\n    <p style=\\\"margin: 0;\\\"><strong style=\\\"color: #d32f2f;\\\">Pending Fee Amount:</strong> ₹{{ $json.amount }}</p>\\n    <p style=\\\"margin: 0;\\\"><strong>Due Date:</strong> {{ $json.dueDate }}</p>\\n  </div>\\n\\n  <h3>Payment Instructions</h3>\\n  <p>To ensure a smooth payment process, please consider the following options:</p>\\n\\n  <ul>\\n    <li><strong>Online Payment:</strong> Visit our official school website and navigate to the fee payment section.</li>\\n    <li><strong>Bank Transfer:</strong> Details for direct bank transfers are available on the school portal or through the administration office.</li>\\n    <li><strong>In-Person:</strong> Payments can be made at the school administrative office during working hours (Monday to Friday, 9:00 AM – 3:00 PM).</li>\\n  </ul>\\n\\n  <p><strong>Important:</strong> Kindly ensure that the payment is completed on or before <strong>{{ $json.dueDate }}</strong> to avoid any inconvenience.</p>\\n\\n  <p>If you have already made the payment, please disregard this notice or share the payment details with us for verification.</p>\\n\\n  <p>We appreciate your prompt attention to this matter and thank you for your continued cooperation in supporting your child’s education.</p>\\n\\n  <h3>Need Assistance?</h3>\\n  <p>If you have any questions or require further clarification, please do not hesitate to contact the school administration office or reply to this email.</p>\\n\\n  <p>Warm regards,<br/>\\n  <strong>{{ $json.schoolName }}</strong><br/>\\n  {{ $json.adminName }}</p>\\n\\n</body></html>\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1248,
+        16
+      ],
+      "id": "4b911d30-9f67-4de7-92f6-f205bb9fa483",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Process Students One by One",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Personalized Fee Reminder",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Process Students One by One",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classify Reply Type",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Payment Confirmation Reply",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Extension Request Reply",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Fee Receipt Request Reply",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Query Reply",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Students One by One": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Prepare Student Email Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Student Email Data": {
+      "main": [
+        [
+          {
+            "node": "Generate Personalized Fee Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Individual Email": {
+      "main": [
+        [
+          {
+            "node": "Check Email Send Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Sucess": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Classify Reply Type",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate Payment Confirmation Reply",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate Extension Request Reply",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser4": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate Fee Receipt Request Reply",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser5": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate Query Reply",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monitor Incoming Replies": {
+      "main": [
+        [
+          {
+            "node": "Extract Reply Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Reply Context": {
+      "main": [
+        [
+          {
+            "node": "Classify Reply Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Reply Type": {
+      "main": [
+        [
+          {
+            "node": "Route by Reply Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Reply Type": {
+      "main": [
+        [
+          {
+            "node": "Generate Payment Confirmation Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Extension Request Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Fee Receipt Request Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Query Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Payment Confirmation Reply": {
+      "main": [
+        [
+          {
+            "node": "Send Automated Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Extension Request Reply": {
+      "main": [
+        [
+          {
+            "node": "Send Automated Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Fee Receipt Request Reply": {
+      "main": [
+        [
+          {
+            "node": "Send Automated Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Query Reply": {
+      "main": [
+        [
+          {
+            "node": "Send Automated Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Automated Reply": {
+      "main": [
+        [
+          {
+            "node": "Check if Forward Needed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Forward Needed": {
+      "main": [
+        [
+          {
+            "node": "Forward to Management",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Export Logs to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forward to Management": {
+      "main": [
+        [
+          {
+            "node": "Export Logs to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Email Send Success": {
+      "main": [
+        [
+          {
+            "node": "Log Sucess",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Personalized Fee Reminder": {
+      "main": [
+        [
+          {
+            "node": "Send Individual Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate Personalized Fee Reminder",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "73af4669-8f85-49c9-9402-a5be1e0cb03d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "96dae43a424de59645dc8cde58271c6fd778e449baa1f50d578f9a9b0e0a08c1"
+  },
+  "id": "z2a6dBR5qxqYBQ1sTKT0u",
+  "tags": []
+}
